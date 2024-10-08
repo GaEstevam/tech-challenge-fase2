@@ -1,16 +1,18 @@
-import mongoose from 'mongoose';
+import { Sequelize } from 'sequelize';
 
-const connectDB = async () => {
+const sequelize = new Sequelize('tech_challenge', 'postgres', 'suasenha', {
+  host: 'localhost',
+  dialect: 'postgres',
+});
+
+const connectDB = async (): Promise<void> => {
   try {
-    await mongoose.connect('mongodb://localhost:27017/tech-challenge', {
-      useNewUrlParser: true,
-      useUnifiedTopology: true
-    });
-    console.log('Conectado ao MongoDB');
+    await sequelize.authenticate();
+    console.log('Conectado ao PostgreSQL');
   } catch (error) {
-    console.error('Erro ao conectar ao MongoDB', error);
-    process.exit(1);  // Encerra o processo em caso de falha
+    console.error('Erro ao conectar ao PostgreSQL', error);
+    process.exit(1); // Encerra o processo em caso de falha
   }
 };
 
-export default connectDB;
+export { sequelize, connectDB };

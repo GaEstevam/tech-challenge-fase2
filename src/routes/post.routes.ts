@@ -1,56 +1,66 @@
 import { Router, Request, Response } from 'express';
-import Post from '../models/post.model';
+import Post from '../models/post.model'; // O modelo ajustado para Sequelize
+import User from '../models/user.model'; // Modelo de usuários para associações
 import auth from '../middleware/auth.middleware';
 import authRole from '../middleware/authRole.middleware';
+import { Op } from 'sequelize';
 
 const router = Router();
 
-// POST /posts - Criação de postagens (Apenas professores)
-router.post('/', auth, authRole('professor'), async (req, res) => {
-  console.log('Dados recebidos para criar postagem:', req.body);
-
+router.post('/', auth, authRole('professor'), async (req: Request, res: Response) => {
   const { title, description, themeId } = req.body;
 
   if (!title || !description) {
-    console.log('Campos obrigatórios faltando na criação da postagem');
     return res.status(400).json({ message: 'Campos obrigatórios faltando' });
   }
 
+  // Certifique-se de que o userId está presente e é do tipo correto
+  const userId = Number(req.userId); // Converte o userId para número
+
+  if (isNaN(userId)) { // Verifica se o userId é um número válido
+    return res.status(400).json({ message: 'ID de usuário inválido' });
+  }
+
+  const userName = req.userName;
+
   try {
-    const newPost = new Post({
+    const newPost = await Post.create({
       title,
       description,
       themeId,
-      userName: req.userId
+      userName, // Passa o userName correto
+      userId,   // Passa o userId convertido para número
     });
 
-    console.log('Nova postagem a ser salva:', newPost);
-    await newPost.save();
     res.status(201).json(newPost);
   } catch (error) {
-    console.error('Erro ao criar a postagem:', error);
     res.status(500).json({ message: 'Erro ao criar o post', error });
   }
 });
 
-// GET /posts - Lista de posts com paginação
+
+// GET /posts - Lista de posts com paginação e informações de criação/edição
 router.get('/', async (req: Request, res: Response) => {
   try {
     const page = parseInt(req.query.page as string) || 1;
     const limit = parseInt(req.query.limit as string) || 10;
-    const skip = (page - 1) * limit;
+    const offset = (page - 1) * limit;
 
-    const [posts, total] = await Promise.all([
-      Post.find().skip(skip).limit(limit),
-      Post.countDocuments()
-    ]);
+    const { count, rows: posts } = await Post.findAndCountAll({
+      limit,
+      offset,
+      include: [
+        { model: User, as: 'creator', attributes: ['username'] }, // Inclui quem criou
+        { model: User, as: 'editor', attributes: ['username'] },  // Inclui quem editou
+      ],
+    });
 
     res.status(200).json({
       page,
       limit,
-      totalPages: Math.ceil(total / limit),
-      totalPosts: total,
-      posts
+      totalPages: Math.ceil(count / limit),
+      totalPosts: count,
+      posts,
     });
   } catch (error) {
     console.error('Erro ao listar os posts:', error);
@@ -67,11 +77,17 @@ router.get('/search', async (req: Request, res: Response) => {
   }
 
   try {
-    const posts = await Post.find({
-      $or: [
-        { title: { $regex: query, $options: 'i' } },
-        { description: { $regex: query, $options: 'i' } }
-      ]
+    const posts = await Post.findAll({
+      where: {
+        [Op.or]: [
+          { title: { [Op.iLike]: `%${query}%` } }, // Usando iLike para case insensitive
+          { description: { [Op.iLike]: `%${query}%` } }
+        ],
+      },
+      include: [
+        { model: User, as: 'creator', attributes: ['username'] }, // Inclui quem criou
+        { model: User, as: 'editor', attributes: ['username'] },  // Inclui quem editou
+      ],
     });
     res.status(200).json(posts);
   } catch (error) {
@@ -80,13 +96,20 @@ router.get('/search', async (req: Request, res: Response) => {
   }
 });
 
-// GET /posts/:id - Leitura de um post específico
+// GET /posts/:id - Leitura de um post específico com informações de criação/edição
 router.get('/:id', async (req: Request, res: Response) => {
   try {
-    const post = await Post.findById(req.params.id);
+    const post = await Post.findByPk(req.params.id, {
+      include: [
+        { model: User, as: 'creator', attributes: ['username'] }, // Inclui quem criou
+        { model: User, as: 'editor', attributes: ['username'] },  // Inclui quem editou
+      ],
+    });
+
     if (!post) {
       return res.status(404).json({ message: 'Post não encontrado' });
     }
+
     res.status(200).json(post);
   } catch (error) {
     console.error('Erro ao buscar o post:', error);
@@ -103,14 +126,24 @@ router.put('/:id', auth, authRole('professor'), async (req: Request, res: Respon
   }
 
   try {
-    const updatedPost = await Post.findByIdAndUpdate(
-      req.params.id,
-      { title, description, themeId, modifyDate: new Date() },
-      { new: true }
+    const [updatedCount, [updatedPost]] = await Post.update(
+      {
+        title,
+        description,
+        themeId,
+        modifyDate: new Date(),
+        userName: req.userId, // Armazena o userId de quem editou o post
+      },
+      {
+        where: { id: req.params.id },
+        returning: true, // Retorna o post atualizado
+      }
     );
-    if (!updatedPost) {
+
+    if (updatedCount === 0) {
       return res.status(404).json({ message: 'Post não encontrado' });
     }
+
     res.status(200).json(updatedPost);
   } catch (error) {
     console.error('Erro ao atualizar o post:', error);
@@ -121,10 +154,14 @@ router.put('/:id', auth, authRole('professor'), async (req: Request, res: Respon
 // DELETE /posts/:id - Exclusão de postagens (Apenas professores)
 router.delete('/:id', auth, authRole('professor'), async (req: Request, res: Response) => {
   try {
-    const deletedPost = await Post.findByIdAndDelete(req.params.id);
-    if (!deletedPost) {
+    const deletedCount = await Post.destroy({
+      where: { id: req.params.id },
+    });
+
+    if (deletedCount === 0) {
       return res.status(404).json({ message: 'Post não encontrado' });
     }
+
     res.status(200).json({ message: 'Post excluído com sucesso' });
   } catch (error) {
     console.error('Erro ao excluir o post:', error);

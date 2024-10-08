@@ -4,7 +4,17 @@ import jwt from 'jsonwebtoken';
 
 interface JwtPayload {
   userId: string;
+  username: string;
   role: string;
+}
+
+// Extensão da interface Request para incluir os novos campos
+declare module 'express' {
+  interface Request {
+    userId?: string;
+    userRole?: string;
+    userName?: string;
+  }
 }
 
 const auth = (req: Request, res: Response, next: NextFunction) => {
@@ -17,8 +27,12 @@ const auth = (req: Request, res: Response, next: NextFunction) => {
   try {
     const secretKey = process.env.JWT_SECRET || 'secret';
     const decoded = jwt.verify(token, secretKey) as JwtPayload;
-    req.userId = decoded.userId;  // Adiciona userId ao objeto req
-    req.userRole = decoded.role;  // Adiciona userRole ao objeto req
+
+    // Adicionando userId, userRole e userName ao request
+    req.userId = decoded.userId;
+    req.userRole = decoded.role;
+    req.userName = decoded.username;
+
     next();
   } catch (error) {
     res.status(400).json({ message: 'Token inválido.' });

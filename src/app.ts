@@ -1,9 +1,9 @@
 import express, { Application } from 'express';
-import mongoose from 'mongoose';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import postRoutes from './routes/post.routes';
 import userRoutes from './routes/user.routes';
+import { connectDB } from './config/db'; // Ajuste o caminho conforme necessário
 
 // Cria a aplicação Express
 const app: Application = express();
@@ -16,16 +16,11 @@ app.use(bodyParser.json());
 app.use('/api/posts', postRoutes);
 app.use('/api/users', userRoutes);
 
-// Conectar ao MongoDB
-const mongoURI = process.env.MONGO_URI || 'mongodb://localhost:27017/tech-challenge';
-mongoose.connect(mongoURI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-  serverSelectionTimeoutMS: 30000, // Aumenta o tempo limite para selecionar o servidor
-  socketTimeoutMS: 45000, // Aumenta o tempo limite do socket
-})
-  .then(() => console.log('Conectado ao MongoDB'))
-  .catch((error) => console.error('Erro ao conectar ao MongoDB:', error));
+// Conectar ao PostgreSQL
+connectDB().catch((error) => {
+  console.error('Erro ao conectar ao PostgreSQL:', error);
+});
+
 // Middleware para capturar erros
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
   res.status(err.status || 500).json({

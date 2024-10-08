@@ -1,7 +1,7 @@
 import { Router, Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import User from '../models/user.model';
+import User from '../models/user.model'; // Supondo que você tenha configurado o modelo de usuário com Sequelize
 
 const router = Router();
 
@@ -16,13 +16,13 @@ router.post('/register', async (req: Request, res: Response) => {
 
   try {
     // Verificar se o usuário já está registrado
-    let user = await User.findOne({ email });
+    let user = await User.findOne({ where: { email } });
     if (user) {
       return res.status(400).json({ message: 'Usuário já registrado.' });
     }
 
     // Criação de novo usuário com senha criptografada
-    user = new User({
+    user = await User.create({
       name,
       username,
       password: await bcrypt.hash(password, 10), // Hash da senha
@@ -31,11 +31,8 @@ router.post('/register', async (req: Request, res: Response) => {
       role
     });
 
-    // Salvar o usuário no banco de dados
-    await user.save();
-
     // Gerar o token JWT
-    const token = jwt.sign({ userId: user._id, role: user.role }, process.env.JWT_SECRET || 'secret', {
+    const token = jwt.sign({ userId: user.id, username: user.username, role: user.role }, process.env.JWT_SECRET || 'secret', {
       expiresIn: '1h'
     });
 
@@ -57,7 +54,7 @@ router.post('/login', async (req: Request, res: Response) => {
 
   try {
     // Verificar se o usuário existe
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ where: { email } });
     if (!user) {
       return res.status(400).json({ message: 'Credenciais inválidas.' });
     }
@@ -69,7 +66,7 @@ router.post('/login', async (req: Request, res: Response) => {
     }
 
     // Gerar o token JWT com userId e role
-    const token = jwt.sign({ userId: user._id, role: user.role }, process.env.JWT_SECRET || 'secret', {
+    const token = jwt.sign({ userId: user.id, role: user.role }, process.env.JWT_SECRET || 'secret', {
       expiresIn: '1h'
     });
 
