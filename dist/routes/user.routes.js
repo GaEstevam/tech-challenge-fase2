@@ -37,7 +37,7 @@ router.post('/register', (req, res) => __awaiter(void 0, void 0, void 0, functio
             mobilePhone,
             role
         });
-        const token = jsonwebtoken_1.default.sign({ id: user.id, role: user.role }, process.env.JWT_SECRET || 'minhaChaveSecretaSuperSegura', // Mesma chave secreta
+        const token = jsonwebtoken_1.default.sign({ id: user.id, role: user.role }, process.env.JWT_SECRET || 'Sua Senha', // Mesma chave secreta
         { expiresIn: '1h' });
         res.status(201).json({ token });
     }
@@ -61,7 +61,7 @@ router.post('/login', (req, res) => __awaiter(void 0, void 0, void 0, function* 
         if (!isMatch) {
             return res.status(400).json({ message: 'Credenciais inválidas.' });
         }
-        const token = jsonwebtoken_1.default.sign({ id: user.id, role: user.role }, process.env.JWT_SECRET || 'minhaChaveSecretaSuperSegura', // Mesma chave secreta
+        const token = jsonwebtoken_1.default.sign({ id: user.id, role: user.role }, process.env.JWT_SECRET || 'Sua Senha', // Mesma chave secreta
         { expiresIn: '1h' });
         res.status(200).json({ token });
     }

@@ -43,13 +43,19 @@ router.post('/create', auth_middleware_1.authMiddleware, isProfessor, (req, res)
             themeId,
             userId,
         });
-        // Envia a resposta imediatamente após a criação
-        return res.status(201).json(post);
+        // Envia a resposta e interrompe o fluxo aqui
+        res.status(201).json(post);
+        return; // Garante que a função encerra após enviar a resposta
     }
     catch (error) {
         // Logando o erro e retornando a resposta apenas uma vez
-        console.error('Erro ao criar o post:', error);
-        return res.status(500).json({ message: 'Erro ao criar o post.', error });
+        if (!res.headersSent) {
+            console.error('Erro ao criar o post:', error);
+            return res.status(500).json({ message: 'Erro ao criar o post.', error });
+        }
+        else {
+            console.error('Erro crítico: headers já enviados, mas erro detectado.', error);
+        }
     }
 }));
 // Rota para editar um post
@@ -84,7 +90,7 @@ router.get('/', auth_middleware_1.authMiddleware, (req, res) => __awaiter(void 0
             include: [{
                     model: user_model_1.default,
                     as: 'creator',
-                    attributes: ['userName'], // Apenas o userName do professor
+                    attributes: ['username'], // Apenas o username do professor
                 }]
         });
         console.log('Posts encontrados:', posts);
@@ -101,7 +107,7 @@ router.get('/:id', auth_middleware_1.authMiddleware, (req, res) => __awaiter(voi
     try {
         const post = yield post_model_1.default.findOne({
             where: { id },
-            include: [{ model: user_model_1.default, as: 'creator', attributes: ['userName'] }]
+            include: [{ model: user_model_1.default, as: 'creator', attributes: ['username'] }]
         });
         if (!post) {
             console.log('Postagem não encontrada');
@@ -121,7 +127,7 @@ router.get('/search/:title', auth_middleware_1.authMiddleware, (req, res) => __a
     try {
         const posts = yield post_model_1.default.findAll({
             where: { title: { [sequelize_1.Op.like]: `%${title}%` } },
-            include: [{ model: user_model_1.default, as: 'creator', attributes: ['userName'] }]
+            include: [{ model: user_model_1.default, as: 'creator', attributes: ['username'] }]
         });
         if (posts.length === 0) {
             console.log('Nenhuma postagem encontrada com esse título');
