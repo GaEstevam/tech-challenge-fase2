@@ -1,0 +1,39 @@
+name: Node.js CI/CD Pipeline
+
+# Triggers the workflow on push or pull request events to the main branch
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+# Define the job for the CI/CD pipeline
+jobs:
+  build:
+
+    # This job runs on the latest version of Ubuntu
+    runs-on: ubuntu-latest
+
+    # Steps of the job
+    steps:
+    - name: Checkout the repository
+      uses: actions/checkout@v2
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '16'
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Run tests
+      run: npm test
+
+    - name: Build Docker image
+      run: docker build . -t tech-challenge-fase2-app
+
+    - name: Run Docker Compose
+      run: docker-compose up --build -d
