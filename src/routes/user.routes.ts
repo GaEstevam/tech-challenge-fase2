@@ -31,7 +31,7 @@ router.post('/register', async (req: Request, res: Response) => {
 
     const token = jwt.sign(
       { id: user.id, role: user.role },
-      process.env.JWT_SECRET || 'minhaChaveSecretaSuperSegura', // Mesma chave secreta
+      process.env.JWT_SECRET || 'Sua Senha', // Mesma chave secreta
       { expiresIn: '1h' }
     );
     
@@ -64,7 +64,7 @@ router.post('/login', async (req: Request, res: Response) => {
 
     const token = jwt.sign(
       { id: user.id, role: user.role },
-      process.env.JWT_SECRET || 'minhaChaveSecretaSuperSegura', // Mesma chave secreta
+      process.env.JWT_SECRET || 'Sua Senha', // Mesma chave secreta
       { expiresIn: '1h' }
     );
     

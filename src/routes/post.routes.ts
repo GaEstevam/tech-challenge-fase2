@@ -34,15 +34,20 @@ router.post('/create', authMiddleware, isProfessor, async (req: Request, res: Re
       userId,
     });
 
-    // Envia a resposta imediatamente após a criação
-    return res.status(201).json(post);
-
+    // Envia a resposta e interrompe o fluxo aqui
+    res.status(201).json(post);
+    return;  // Garante que a função encerra após enviar a resposta
   } catch (error) {
     // Logando o erro e retornando a resposta apenas uma vez
-    console.error('Erro ao criar o post:', error);
-    return res.status(500).json({ message: 'Erro ao criar o post.', error });
+    if (!res.headersSent) {
+      console.error('Erro ao criar o post:', error);
+      return res.status(500).json({ message: 'Erro ao criar o post.', error });
+    } else {
+      console.error('Erro crítico: headers já enviados, mas erro detectado.', error);
+    }
   }
 });
+
 
 
 
@@ -81,7 +86,7 @@ router.get('/', authMiddleware, async (req: Request, res: Response) => {
       include: [{
         model: User,
         as: 'creator',
-        attributes: ['userName'], // Apenas o userName do professor
+        attributes: ['username'], // Apenas o username do professor
       }]
     });
 
@@ -100,7 +105,7 @@ router.get('/:id', authMiddleware, async (req: Request, res: Response) => {
   try {
     const post = await Post.findOne({
       where: { id },
-      include: [{ model: User, as: 'creator', attributes: ['userName'] }]
+      include: [{ model: User, as: 'creator', attributes: ['username'] }]
     });
 
     if (!post) {
@@ -123,7 +128,7 @@ router.get('/search/:title', authMiddleware, async (req: Request, res: Response)
   try {
     const posts = await Post.findAll({
       where: { title: { [Op.like]: `%${title}%` } },
-      include: [{ model: User, as: 'creator', attributes: ['userName'] }]
+      include: [{ model: User, as: 'creator', attributes: ['username'] }]
     });
 
     if (posts.length === 0) {
