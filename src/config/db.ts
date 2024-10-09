@@ -1,18 +1,17 @@
 import { Sequelize } from 'sequelize';
+import dotenv from 'dotenv';
 
-const sequelize = new Sequelize('tech_challenge', 'postgres', 'suasenha', {
-  host: 'localhost',
-  dialect: 'postgres',
-});
+dotenv.config(); // Carregar variáveis de ambiente
 
-const connectDB = async (): Promise<void> => {
-  try {
-    await sequelize.authenticate();
-    console.log('Conectado ao PostgreSQL');
-  } catch (error) {
-    console.error('Erro ao conectar ao PostgreSQL', error);
-    process.exit(1); // Encerra o processo em caso de falha
+export const sequelize = new Sequelize(
+  process.env.DB_NAME || '',
+  process.env.DB_USER || '',
+  process.env.DB_PASS || '',
+  {
+    host: process.env.DB_HOST || 'localhost',
+    dialect: 'postgres',
+    logging: false, // Defina como true se quiser ver as queries SQL no console
   }
-};
+);
 
-export { sequelize, connectDB };
+export default sequelize;

@@ -9,6 +9,6 @@
     "outDir": "./dist",
     "typeRoots": ["./node_modules/@types", "./src/types"]
   },
-  "include": ["src/**/*.ts"],
+  "include": ["src/**/*.ts", "src/config/db.ts"],
   "exclude": ["node_modules"]
 }

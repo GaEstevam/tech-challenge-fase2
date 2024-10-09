@@ -1,9 +1,6 @@
-import { Request } from 'express';
-
-// Extende a interface Request do Express
-declare module 'express-serve-static-core' {
+// custom.d.ts
+declare namespace Express {
   interface Request {
-    userId?: string;  // Adiciona a propriedade userId
-    userRole?: string;  // Adiciona a propriedade userRole
+    user: { id: number, role: string }; // Ajuste conforme os dados do usuário
   }
 }

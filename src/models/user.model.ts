@@ -9,9 +9,7 @@ interface IUser {
   password: string;
   email: string;
   mobilePhone?: string;
-  external_Id?: string;
   creation_Date?: Date;
-  last_Login?: Date;
   is_Active?: boolean;
   role: 'professor' | 'aluno';  // Campo para armazenar o papel
 }
@@ -24,9 +22,7 @@ class User extends Model<IUser> implements IUser {
   public password!: string;
   public email!: string;
   public mobilePhone?: string;
-  public external_Id?: string;
   public creation_Date!: Date;
-  public last_Login?: Date;
   public is_Active!: boolean;
   public role!: 'professor' | 'aluno';
 
@@ -65,18 +61,10 @@ User.init(
       type: DataTypes.STRING,
       allowNull: true,
     },
-    external_Id: {
-      type: DataTypes.STRING,
-      allowNull: true,
-    },
     creation_Date: {
       type: DataTypes.DATE,
       allowNull: true,
       defaultValue: DataTypes.NOW,
-    },
-    last_Login: {
-      type: DataTypes.DATE,
-      allowNull: true,
     },
     is_Active: {
       type: DataTypes.BOOLEAN,
@@ -94,5 +82,10 @@ User.init(
     modelName: 'User', // Nome do modelo
   }
 );
+
+export enum Role {
+  PROFESSOR = 'professor',
+  STUDENT = 'student'
+}
 
 export default User;
