@@ -1,22 +1,22 @@
 import { Model, DataTypes, Optional } from 'sequelize';
-import { sequelize } from '../config/db'; // Assumindo que você tenha uma configuração do Sequelize
+import { sequelize } from '../config/db'; 
 import User from './user.model';
 
-// Definindo a interface para tipagem do Post
+
 interface IPostAttributes {
-  id?: number; // ID pode ser opcional se for gerado automaticamente
+  id?: number; 
   title: string;
   description: string;
-  userId: number;  // Chave estrangeira para o User (associado pelo ID)
-  themeId?: number;  // Número que representa o tema (1, 2, etc.)
+  userId: number;  
+  themeId?: number;  
   createdDate?: Date;
   modifyDate?: Date;
 }
 
-// Definindo a interface para incluir os atributos opcionais
+
 interface IPostCreationAttributes extends Optional<IPostAttributes, 'id' | 'createdDate' | 'modifyDate'> {}
 
-// Definindo um enum para os temas
+
 enum Theme {
   CIENCIAS_EXATAS = 1,
   CIENCIAS_HUMANAS = 2,
@@ -24,17 +24,17 @@ enum Theme {
   MULTIDISCIPLINAR = 4,
 }
 
-// Definindo o modelo Post com Sequelize
+
 class Post extends Model<IPostAttributes, IPostCreationAttributes> implements IPostAttributes {
   public id!: number;
   public title!: string;
   public description!: string;
-  public userId!: number;  // userId (chave estrangeira)
+  public userId!: number;  
   public themeId?: number;
   public createdDate!: Date;
   public modifyDate!: Date;
 
-  // timestamps!
+  
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
 }
@@ -70,8 +70,8 @@ Post.init({
     defaultValue: DataTypes.NOW,
   },
 }, {
-  sequelize, // A instância do Sequelize
-  tableName: 'posts', // Nome da tabela
+  sequelize, 
+  tableName: 'posts', 
   hooks: {
     beforeCreate: (post: IPostAttributes) => {
       post.createdDate = new Date();
@@ -83,9 +83,9 @@ Post.init({
   },
 });
 
-// Definindo as associações
-Post.belongsTo(User, { as: 'creator', foreignKey: 'userId' });  // Associa Post ao User pelo userId (criador)
-User.hasMany(Post, { as: 'posts', foreignKey: 'userId' });      // User pode ter muitos Posts
 
-// Exportando o modelo Post
+Post.belongsTo(User, { as: 'creator', foreignKey: 'userId' });  
+User.hasMany(Post, { as: 'posts', foreignKey: 'userId' });      
+
+
 export default Post;

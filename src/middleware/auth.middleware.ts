@@ -2,36 +2,36 @@ import jwt, { JwtPayload } from 'jsonwebtoken';
 import { Request, Response, NextFunction } from 'express';
 
 export const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
-  const authHeader = req.headers.authorization;  // Pega o header Authorization
-  const token = authHeader && authHeader.split(' ')[1];  // Extrai o token do header
+  const authHeader = req.headers.authorization;  
+  const token = authHeader && authHeader.split(' ')[1];  
 
-  // Verifique se o token foi enviado
+  
   if (!token) {
     console.log('Token não fornecido');
     return res.status(401).json({ message: 'Token não fornecido' });
   }
 
   try {
-    // Verifica o token JWT
+    
     const decoded = jwt.verify(token, process.env.JWT_SECRET || 'fallbackSecret');
   
-    // Verifica se `decoded` é do tipo `JwtPayload`
+    
     if (typeof decoded === 'string') {
       console.log('Token inválido - String');
       return res.status(400).json({ message: 'Token inválido' });
     }
   
-    // Verifica se o payload contém `id` e `role`
+    
     const { id, role } = decoded as JwtPayload & { id: number; role: string };
   
-    // Armazena o payload no `req.user`
+    
     req.user = { id, role };
   
-    console.log('Token válido, usuário autenticado:', req.user);  // Log para depuração
+    console.log('Token válido, usuário autenticado:', req.user);  
   
-    next();  // Passa para o próximo middleware ou rota
+    next();  
   } catch (error) {
-    // Verifica se o erro é uma instância de Error e tem uma mensagem
+    
     if (error instanceof Error) {
       console.log('Erro ao verificar o token:', error.message);
       return res.status(401).json({ message: 'Token inválido' });

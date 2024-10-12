@@ -1,9 +1,9 @@
 import { DataTypes, Model } from 'sequelize';
-import { sequelize } from '../config/db'; // Supondo que você tenha um arquivo de configuração do Sequelize
+import { sequelize } from '../config/db'; 
 
-// Interface para o User
+
 interface IUser {
-  id?: number; // Adicionando o id, que será a chave primária
+  id?: number; 
   name: string;
   username: string;
   password: string;
@@ -11,10 +11,9 @@ interface IUser {
   mobilePhone?: string;
   creation_Date?: Date;
   is_Active?: boolean;
-  role: 'professor' | 'aluno';  // Campo para armazenar o papel
+  role: 'professor' | 'aluno';  
 }
 
-// Definindo o modelo User
 class User extends Model<IUser> implements IUser {
   public id!: number;
   public name!: string;
@@ -26,12 +25,10 @@ class User extends Model<IUser> implements IUser {
   public is_Active!: boolean;
   public role!: 'professor' | 'aluno';
 
-  // timestamps
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
 }
 
-// Inicializando o modelo User
 User.init(
   {
     id: {
@@ -77,9 +74,9 @@ User.init(
     },
   },
   {
-    sequelize, // Passando a instância do Sequelize
-    tableName: 'users', // Nome da tabela no banco de dados
-    modelName: 'User', // Nome do modelo
+    sequelize, 
+    tableName: 'users', 
+    modelName: 'User', 
     schema: 'public',
   }
 );

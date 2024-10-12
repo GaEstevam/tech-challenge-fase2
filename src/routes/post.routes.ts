@@ -1,13 +1,13 @@
 import express, { Request, Response, Router } from 'express';
-import Post from '../models/post.model'; // Modelo do Post
-import User from '../models/user.model'; // Modelo do Usuário
-import { Op } from 'sequelize'; // Operador do Sequelize para buscas
-import { authMiddleware } from '../middleware/auth.middleware'; // Middleware para autenticação JWT
-import { Role } from '../models/user.model'; // Enum com os papéis de usuário (professor/aluno)
+import Post from '../models/post.model'; 
+import User from '../models/user.model'; 
+import { Op } from 'sequelize'; 
+import { authMiddleware } from '../middleware/auth.middleware'; 
+import { Role } from '../models/user.model'; 
 
 const router = Router();
 
-// Middleware para verificar se o usuário é professor
+
 const isProfessor = (req: Request, res: Response, next: Function) => {
   if (!req.user || req.user.role !== Role.PROFESSOR) {
     console.log('Acesso negado: Usuário não é professor');
@@ -16,7 +16,7 @@ const isProfessor = (req: Request, res: Response, next: Function) => {
   next();
 };
 
-// Rota para criar um post
+
 router.post('/create', authMiddleware, isProfessor, async (req: Request, res: Response) => {
   try {
     const { title, description, themeId } = req.body;
@@ -26,7 +26,7 @@ router.post('/create', authMiddleware, isProfessor, async (req: Request, res: Re
       return res.status(400).json({ message: 'Usuário não autenticado.' });
     }
 
-    // Criação do post
+    
     const post = await Post.create({
       title,
       description,
@@ -34,9 +34,9 @@ router.post('/create', authMiddleware, isProfessor, async (req: Request, res: Re
       userId,
     });
 
-    // Envia a resposta e interrompe o fluxo aqui
+    
     res.status(201).json(post);
-    return;  // Garante que a função encerra após enviar a resposta
+    return;  
   } catch (error) {
     if (!res.headersSent) {
       console.error('Erro ao criar o post:', error);
@@ -47,21 +47,21 @@ router.post('/create', authMiddleware, isProfessor, async (req: Request, res: Re
   }
 });
 
-// Rota para editar um post
+
 router.put('/edit/:id', authMiddleware, isProfessor, async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const { title, description, themeId } = req.body;
     const userId = req.user.id;
 
-    // Encontra o post pelo ID e verifica se o criador é o usuário atual
+    
     const post = await Post.findOne({ where: { id, userId } });
     if (!post) {
       console.log('Post não encontrado ou sem permissão para edição');
       return res.status(404).json({ message: 'Post não encontrado ou você não tem permissão para editá-lo.' });
     }
 
-    // Atualiza o post
+    
     post.title = title || post.title;
     post.description = description || post.description;
     post.themeId = themeId || post.themeId;
@@ -75,14 +75,14 @@ router.put('/edit/:id', authMiddleware, isProfessor, async (req: Request, res: R
   }
 });
 
-// Rota para listar todos os posts com o nome do professor associado
+
 router.get('/', authMiddleware, async (req: Request, res: Response) => {
   try {
     const posts = await Post.findAll({
       include: [{
         model: User,
         as: 'creator',
-        attributes: ['username'], // Apenas o username do professor
+        attributes: ['username'], 
       }]
     });
 
@@ -94,7 +94,7 @@ router.get('/', authMiddleware, async (req: Request, res: Response) => {
   }
 });
 
-// Rota para buscar uma postagem específica por ID
+
 router.get('/:id', authMiddleware, async (req: Request, res: Response) => {
   const { id } = req.params;
 
@@ -117,7 +117,7 @@ router.get('/:id', authMiddleware, async (req: Request, res: Response) => {
   }
 });
 
-// Rota para pesquisar postagens pelo título
+
 router.get('/search/:title', authMiddleware, async (req: Request, res: Response) => {
   const { title } = req.params;
 
@@ -140,7 +140,7 @@ router.get('/search/:title', authMiddleware, async (req: Request, res: Response)
   }
 });
 
-// Rota para excluir uma postagem
+
 router.delete('/delete/:id', authMiddleware, isProfessor, async (req: Request, res: Response) => {
   const { id } = req.params;
   const userId = req.user.id;

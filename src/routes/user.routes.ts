@@ -1,12 +1,11 @@
 import { Router, Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import User from '../models/user.model'; // Assumindo o caminho do modelo User
-import { authMiddleware } from '../middleware/auth.middleware'; // Middleware de autenticação para rotas protegidas
+import User from '../models/user.model'; 
+import { authMiddleware } from '../middleware/auth.middleware'; 
 
 const router = Router();
 
-// Rota de registro de usuário
 router.post('/register', async (req: Request, res: Response) => {
   const { name, username, password, email, mobilePhone, role } = req.body;
 
@@ -23,7 +22,7 @@ router.post('/register', async (req: Request, res: Response) => {
     user = await User.create({
       name,
       username,
-      password: await bcrypt.hash(password, 10), // Criptografar a senha
+      password: await bcrypt.hash(password, 10), 
       email,
       mobilePhone,
       role
@@ -31,7 +30,7 @@ router.post('/register', async (req: Request, res: Response) => {
 
     const token = jwt.sign(
       { id: user.id, role: user.role },
-      process.env.JWT_SECRET || 'Sua Senha', // Mesma chave secreta
+      process.env.JWT_SECRET || 'Sua Senha', 
       { expiresIn: '1h' }
     );
     
@@ -43,7 +42,7 @@ router.post('/register', async (req: Request, res: Response) => {
   }
 });
 
-// Rota de login de usuário
+
 router.post('/login', async (req: Request, res: Response) => {
   const { email, password } = req.body;
 
@@ -64,7 +63,7 @@ router.post('/login', async (req: Request, res: Response) => {
 
     const token = jwt.sign(
       { id: user.id, role: user.role },
-      process.env.JWT_SECRET || 'Sua Senha', // Mesma chave secreta
+      process.env.JWT_SECRET || 'Sua Senha', 
       { expiresIn: '1h' }
     );
     
@@ -76,7 +75,7 @@ router.post('/login', async (req: Request, res: Response) => {
   }
 });
 
-// Rota para obter todos os usuários (apenas para administradores ou professores)
+
 router.get('/', authMiddleware, async (req: Request, res: Response) => {
   try {
     const users = await User.findAll();
@@ -86,7 +85,7 @@ router.get('/', authMiddleware, async (req: Request, res: Response) => {
   }
 });
 
-// Rota para obter um único usuário por ID
+
 router.get('/:id', authMiddleware, async (req: Request, res: Response) => {
   const { id } = req.params;
 
@@ -101,7 +100,7 @@ router.get('/:id', authMiddleware, async (req: Request, res: Response) => {
   }
 });
 
-// Rota para atualizar um usuário
+
 router.put('/:id', authMiddleware, async (req: Request, res: Response) => {
   const { id } = req.params;
   const { name, username, email, mobilePhone, is_Active, role } = req.body;
@@ -126,7 +125,7 @@ router.put('/:id', authMiddleware, async (req: Request, res: Response) => {
   }
 });
 
-// Rota para deletar um usuário
+
 router.delete('/:id', authMiddleware, async (req: Request, res: Response) => {
   const { id } = req.params;
 

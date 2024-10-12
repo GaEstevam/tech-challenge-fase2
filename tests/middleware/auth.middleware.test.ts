@@ -11,26 +11,26 @@ describe('Auth Middleware', () => {
     );
 
     const response = await request(app)
-      .get('/api/posts') // Endpoint protegido
-      .set('Authorization', `Bearer ${token}`); // Envia o token
+      .get('/api/posts') 
+      .set('Authorization', `Bearer ${token}`); 
 
-    expect(response.statusCode).toBe(200); // Verifica se o acesso foi permitido
+    expect(response.statusCode).toBe(200); 
   });
 
   it('Deve negar acesso sem token', async () => {
     const response = await request(app)
-      .get('/api/posts'); // Endpoint protegido
+      .get('/api/posts'); 
 
-    expect(response.statusCode).toBe(401); // Verifica se o status é 401 Unauthorized
-    expect(response.body.message).toBe('Token não fornecido'); // Mensagem correta
+    expect(response.statusCode).toBe(401); 
+    expect(response.body.message).toBe('Token não fornecido'); 
   });
 
   it('Deve negar acesso com token inválido', async () => {
     const response = await request(app)
       .get('/api/posts')
-      .set('Authorization', 'Bearer token_invalido'); // Token inválido
+      .set('Authorization', 'Bearer token_invalido'); 
 
-    expect(response.statusCode).toBe(401); // Verifica se o status é 401 Unauthorized
-    expect(response.body.message).toBe('Token inválido'); // Mensagem correta
+    expect(response.statusCode).toBe(401); 
+    expect(response.body.message).toBe('Token inválido'); 
   });
 });

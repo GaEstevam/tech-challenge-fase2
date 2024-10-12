@@ -6,7 +6,6 @@ describe('User Routes', () => {
   let token: string;
 
   beforeAll(async () => {
-    // Cria um token JWT para um professor
     token = jwt.sign(
       { id: 1, role: 'professor' },
       process.env.JWT_SECRET || 'Sua Senha',
@@ -26,8 +25,8 @@ describe('User Routes', () => {
         role: "professor",
       });
   
-    expect(response.statusCode).toBe(201); // Verifica se o status é 201 Created
-    expect(response.body).toHaveProperty('token'); // Verifica se o token é retornado
+    expect(response.statusCode).toBe(201); 
+    expect(response.body).toHaveProperty('token'); 
   });
   
 
@@ -39,35 +38,35 @@ describe('User Routes', () => {
         password: 'senha123',
       });
 
-    expect(response.statusCode).toBe(200); // Verifica se o status é 200 OK
-    expect(response.body).toHaveProperty('token'); // Verifica se o token é retornado
+    expect(response.statusCode).toBe(200); 
+    expect(response.body).toHaveProperty('token'); 
   });
 
   it('Deve listar todos os usuários', async () => {
     const response = await request(app)
       .get('/api/users')
-      .set('Authorization', `Bearer ${token}`); // Envia o token
+      .set('Authorization', `Bearer ${token}`); 
 
-    expect(response.statusCode).toBe(200); // Verifica se o status é 200 OK
-    expect(Array.isArray(response.body)).toBe(true); // Verifica se a resposta é um array
+    expect(response.statusCode).toBe(200); 
+    expect(Array.isArray(response.body)).toBe(true); 
   });
 
   it('Deve retornar um usuário específico pelo ID', async () => {
     const response = await request(app)
-      .get('/api/users/1') // Substitua pelo ID do usuário
-      .set('Authorization', `Bearer ${token}`); // Envia o token
+      .get('/api/users/1') 
+      .set('Authorization', `Bearer ${token}`); 
 
-    expect(response.statusCode).toBe(200); // Verifica se o status é 200 OK
-    expect(response.body).toHaveProperty('id'); // Verifica se o usuário foi encontrado
-    expect(response.body.id).toBe(1); // Verifica se o ID do usuário é o esperado
+    expect(response.statusCode).toBe(200); 
+    expect(response.body).toHaveProperty('id'); 
+    expect(response.body.id).toBe(1); 
   });
 
   it('Deve retornar 404 ao buscar usuário inexistente', async () => {
     const response = await request(app)
-      .get('/api/users/999') // ID que não existe
-      .set('Authorization', `Bearer ${token}`); // Envia o token
+      .get('/api/users/999') 
+      .set('Authorization', `Bearer ${token}`); 
 
-    expect(response.statusCode).toBe(404); // Verifica se o status é 404 Not Found
-    expect(response.body.message).toBe('Usuário não encontrado.'); // Mensagem correta
+    expect(response.statusCode).toBe(404); 
+    expect(response.body.message).toBe('Usuário não encontrado.'); 
   });
 });
