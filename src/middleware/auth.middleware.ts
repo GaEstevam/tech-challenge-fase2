@@ -11,7 +11,6 @@ export const authMiddleware = (req: Request, res: Response, next: NextFunction) 
     return res.status(401).json({ message: 'Token não fornecido' });
   }
 
-
   try {
     // Verifica o token JWT
     const decoded = jwt.verify(token, process.env.JWT_SECRET || 'fallbackSecret');
@@ -28,7 +27,7 @@ export const authMiddleware = (req: Request, res: Response, next: NextFunction) 
     // Armazena o payload no `req.user`
     req.user = { id, role };
   
-    console.log('Token válido, usuário autenticado:', req.user);  // Adicione este log para verificar o token
+    console.log('Token válido, usuário autenticado:', req.user);  // Log para depuração
   
     next();  // Passa para o próximo middleware ou rota
   } catch (error) {

@@ -2,6 +2,7 @@
   "compilerOptions": {
     "target": "ES6",
     "module": "commonjs",
+    "resolveJsonModule": true,
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
@@ -9,6 +10,6 @@
     "outDir": "./dist",
     "typeRoots": ["./node_modules/@types", "./src/types"]
   },
-  "include": ["src/**/*.ts", "src/config/db.ts"],
+  "include": ["src/**/*.ts", "src/config/db.ts", "global.d.ts"],
   "exclude": ["node_modules"]
 }

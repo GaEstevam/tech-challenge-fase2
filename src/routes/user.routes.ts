@@ -13,7 +13,7 @@ router.post('/register', async (req: Request, res: Response) => {
   if (!name || !username || !password || !email || !role) {
     return res.status(400).json({ message: 'Campos obrigatórios faltando' });
   }
-
+  console.log('Dados recebidos:', req.body);
   try {
     let user = await User.findOne({ where: { email } });
     if (user) {

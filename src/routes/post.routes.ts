@@ -1,13 +1,13 @@
 import express, { Request, Response, Router } from 'express';
-import Post from '../models/post.model'; // Assumindo o caminho do modelo Post
-import User from '../models/user.model'; // Assumindo o caminho do modelo User
-import { Op } from 'sequelize';
-import { authMiddleware } from '../middleware/auth.middleware'; // Middleware para autenticação
-import { Role } from '../models/user.model'; // Enum para roles, onde há a role 'professor'
+import Post from '../models/post.model'; // Modelo do Post
+import User from '../models/user.model'; // Modelo do Usuário
+import { Op } from 'sequelize'; // Operador do Sequelize para buscas
+import { authMiddleware } from '../middleware/auth.middleware'; // Middleware para autenticação JWT
+import { Role } from '../models/user.model'; // Enum com os papéis de usuário (professor/aluno)
 
 const router = Router();
 
-// Middleware para verificar se o usuário é um professor
+// Middleware para verificar se o usuário é professor
 const isProfessor = (req: Request, res: Response, next: Function) => {
   if (!req.user || req.user.role !== Role.PROFESSOR) {
     console.log('Acesso negado: Usuário não é professor');
@@ -38,7 +38,6 @@ router.post('/create', authMiddleware, isProfessor, async (req: Request, res: Re
     res.status(201).json(post);
     return;  // Garante que a função encerra após enviar a resposta
   } catch (error) {
-    // Logando o erro e retornando a resposta apenas uma vez
     if (!res.headersSent) {
       console.error('Erro ao criar o post:', error);
       return res.status(500).json({ message: 'Erro ao criar o post.', error });
@@ -47,9 +46,6 @@ router.post('/create', authMiddleware, isProfessor, async (req: Request, res: Re
     }
   }
 });
-
-
-
 
 // Rota para editar um post
 router.put('/edit/:id', authMiddleware, isProfessor, async (req: Request, res: Response) => {

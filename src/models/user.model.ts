@@ -80,6 +80,7 @@ User.init(
     sequelize, // Passando a instância do Sequelize
     tableName: 'users', // Nome da tabela no banco de dados
     modelName: 'User', // Nome do modelo
+    schema: 'public',
   }
 );
 
