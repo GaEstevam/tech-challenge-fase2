@@ -3,7 +3,7 @@ import cors from 'cors';
 import bodyParser from 'body-parser';
 import postRoutes from './routes/post.routes';
 import userRoutes from './routes/user.routes';
-import { sequelize } from './config/db'; 
+import sequelize  from './config/db'; 
 
 
 const app: Application = express();

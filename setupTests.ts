@@ -1,4 +1,4 @@
-import { sequelize } from './src/config/db';
+import sequelize  from './src/config/db';
 import User from './src/models/user.model';  
 
 beforeAll(async () => {

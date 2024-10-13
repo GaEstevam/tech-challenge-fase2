@@ -11,6 +11,8 @@ services:
       DB_USER: postgres
       DB_PASSWORD: suaSenha
       DB_NAME: tech_challenge
+    networks:
+      - app-network
   db:
     image: postgres
     environment:
@@ -19,3 +21,8 @@ services:
       POSTGRES_PASSWORD: suaSenha
     ports:
       - '5432:5432'
+    networks:
+      - app-network
+
+networks:
+  app-network:
