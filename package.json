@@ -5,7 +5,8 @@
     "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
     "build": "tsc",
     "start": "node dist/server.js",
-    "test": "set NODE_ENV=test&& jest --coverage"
+    "test": "set NODE_ENV=test&& jest --coverage",
+    "docker:dev": "docker-compose up --build"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

@@ -227,7 +227,11 @@
 <a name='L162'></a><a href='#L162'>162</a>
 <a name='L163'></a><a href='#L163'>163</a>
 <a name='L164'></a><a href='#L164'>164</a>
-<a name='L165'></a><a href='#L165'>165</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">3x</span>
+<a name='L165'></a><a href='#L165'>165</a>
+<a name='L166'></a><a href='#L166'>166</a>
+<a name='L167'></a><a href='#L167'>167</a>
+<a name='L168'></a><a href='#L168'>168</a>
+<a name='L169'></a><a href='#L169'>169</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
@@ -238,34 +242,34 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -356,6 +360,11 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -366,7 +375,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -392,15 +400,15 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import express, { Request, Response, Router } from 'express';
-import Post from '../models/post.model'; // Modelo do Post
-import User from '../models/user.model'; // Modelo do Usuário
-import { Op } from 'sequelize'; // Operador do Sequelize para buscas
-import { authMiddleware } from '../middleware/auth.middleware'; // Middleware para autenticação JWT
-import { Role } from '../models/user.model'; // Enum com os papéis de usuário (professor/aluno)
+import Post from '../models/post.model'; 
+import User from '../models/user.model'; 
+import { Op } from 'sequelize'; 
+import { authMiddleware } from '../middleware/auth.middleware'; 
+import { Role } from '../models/user.model'; 
 &nbsp;
 const router = Router();
 &nbsp;
-// Middleware para verificar se o usuário é professor
+&nbsp;
 const isProfessor = (req: Request, res: Response, next: Function) =&gt; {
   <span class="missing-if-branch" title="if path not taken" >I</span>if (!req.user || req.user.role !== Role.PROFESSOR) {
 <span class="cstat-no" title="statement not covered" >    console.log('Acesso negado: Usuário não é professor');</span>
@@ -409,7 +417,7 @@ const isProfessor = (req: Request, res: Response, next: Function) =&gt; {
   next();
 };
 &nbsp;
-// Rota para criar um post
+&nbsp;
 router.post('/create', authMiddleware, isProfessor, async (req: Request, res: Response) =&gt; {
   try {
     const { title, description, themeId } = req.body;
@@ -419,7 +427,7 @@ router.post('/create', authMiddleware, isProfessor, async (req: Request, res: Re
 <span class="cstat-no" title="statement not covered" >      return res.status(400).json({ message: 'Usuário não autenticado.' });</span>
     }
 &nbsp;
-    // Criação do post
+    
     const post = await Post.create({
       title,
       description,
@@ -427,9 +435,9 @@ router.post('/create', authMiddleware, isProfessor, async (req: Request, res: Re
       userId,
     });
 &nbsp;
-    // Envia a resposta e interrompe o fluxo aqui
+    
     res.status(201).json(post);
-    return;  // Garante que a função encerra após enviar a resposta
+    return;  
   } catch (error) {
 <span class="cstat-no" title="statement not covered" >    if (!res.headersSent) {</span>
 <span class="cstat-no" title="statement not covered" >      console.error('Erro ao criar o post:', error);</span>
@@ -440,21 +448,21 @@ router.post('/create', authMiddleware, isProfessor, async (req: Request, res: Re
   }
 });
 &nbsp;
-// Rota para editar um post
+&nbsp;
 router.put('/edit/:id', authMiddleware, isProfessor, async (req: Request, res: Response) =&gt; {
   try {
     const { id } = req.params;
     const { title, description, themeId } = req.body;
     const userId = req.user.id;
 &nbsp;
-    // Encontra o post pelo ID e verifica se o criador é o usuário atual
+    
     const post = await Post.findOne({ where: { id, userId } });
     <span class="missing-if-branch" title="if path not taken" >I</span>if (!post) {
 <span class="cstat-no" title="statement not covered" >      console.log('Post não encontrado ou sem permissão para edição');</span>
 <span class="cstat-no" title="statement not covered" >      return res.status(404).json({ message: 'Post não encontrado ou você não tem permissão para editá-lo.' });</span>
     }
 &nbsp;
-    // Atualiza o post
+    
     post.title = title || <span class="branch-1 cbranch-no" title="branch not covered" >post.title;</span>
     post.description = description || <span class="branch-1 cbranch-no" title="branch not covered" >post.description;</span>
     post.themeId = themeId || post.themeId;
@@ -468,14 +476,14 @@ router.put('/edit/:id', authMiddleware, isProfessor, async (req: Request, res: R
   }
 });
 &nbsp;
-// Rota para listar todos os posts com o nome do professor associado
+&nbsp;
 router.get('/', authMiddleware, async (req: Request, res: Response) =&gt; {
   try {
     const posts = await Post.findAll({
       include: [{
         model: User,
         as: 'creator',
-        attributes: ['username'], // Apenas o username do professor
+        attributes: ['username'], 
       }]
     });
 &nbsp;
@@ -487,7 +495,7 @@ router.get('/', authMiddleware, async (req: Request, res: Response) =&gt; {
   }
 });
 &nbsp;
-// Rota para buscar uma postagem específica por ID
+&nbsp;
 router.get('/:id', authMiddleware, async (req: Request, res: Response) =&gt; {
   const { id } = req.params;
 &nbsp;
@@ -510,19 +518,24 @@ router.get('/:id', authMiddleware, async (req: Request, res: Response) =&gt; {
   }
 });
 &nbsp;
-// Rota para pesquisar postagens pelo título
-router.get('/search/:title', authMiddleware, async (req: Request, res: Response) =&gt; {
-  const { title } = req.params;
+&nbsp;
+router.get('/search/:query', authMiddleware, async (req: Request, res: Response) =&gt; {
+  const { query } = req.params;
 &nbsp;
   try {
     const posts = await Post.findAll({
-      where: { title: { [Op.like]: `%${title}%` } },
+      where: {
+        [Op.or]: [
+          { title: { [Op.like]: `%${query}%` } },
+          { description: { [Op.like]: `%${query}%` } }
+        ]
+      },
       include: [{ model: User, as: 'creator', attributes: ['username'] }]
     });
 &nbsp;
     <span class="missing-if-branch" title="if path not taken" >I</span>if (posts.length === 0) {
-<span class="cstat-no" title="statement not covered" >      console.log('Nenhuma postagem encontrada com esse título');</span>
-<span class="cstat-no" title="statement not covered" >      return res.status(404).json({ message: 'Nenhuma postagem encontrada com esse título.' });</span>
+<span class="cstat-no" title="statement not covered" >      console.log('Nenhuma postagem encontrada com o termo fornecido');</span>
+<span class="cstat-no" title="statement not covered" >      return res.status(404).json({ message: 'Nenhuma postagem encontrada com o termo fornecido.' });</span>
     }
 &nbsp;
     console.log('Postagens encontradas:', posts);
@@ -533,7 +546,6 @@ router.get('/search/:title', authMiddleware, async (req: Request, res: Response)
   }
 });
 &nbsp;
-// Rota para excluir uma postagem
 router.delete('/delete/:id', authMiddleware, isProfessor, async (req: Request, res: Response) =&gt; {
   const { id } = req.params;
   const userId = req.user.id;
@@ -562,7 +574,7 @@ export default router;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2024-10-12T12:56:10.597Z
+                at 2024-10-13T15:32:53.132Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

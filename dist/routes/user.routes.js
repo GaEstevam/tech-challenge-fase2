@@ -15,15 +15,15 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-const user_model_1 = __importDefault(require("../models/user.model")); // Assumindo o caminho do modelo User
-const auth_middleware_1 = require("../middleware/auth.middleware"); // Middleware de autenticação para rotas protegidas
+const user_model_1 = __importDefault(require("../models/user.model"));
+const auth_middleware_1 = require("../middleware/auth.middleware");
 const router = (0, express_1.Router)();
-// Rota de registro de usuário
 router.post('/register', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { name, username, password, email, mobilePhone, role } = req.body;
     if (!name || !username || !password || !email || !role) {
         return res.status(400).json({ message: 'Campos obrigatórios faltando' });
     }
+    console.log('Dados recebidos:', req.body);
     try {
         let user = yield user_model_1.default.findOne({ where: { email } });
         if (user) {
@@ -37,8 +37,7 @@ router.post('/register', (req, res) => __awaiter(void 0, void 0, void 0, functio
             mobilePhone,
             role
         });
-        const token = jsonwebtoken_1.default.sign({ id: user.id, role: user.role }, process.env.JWT_SECRET || 'Sua Senha', // Mesma chave secreta
-        { expiresIn: '1h' });
+        const token = jsonwebtoken_1.default.sign({ id: user.id, role: user.role }, process.env.JWT_SECRET || 'Sua Senha', { expiresIn: '1h' });
         res.status(201).json({ token });
     }
     catch (error) {
@@ -46,7 +45,6 @@ router.post('/register', (req, res) => __awaiter(void 0, void 0, void 0, functio
         res.status(500).json({ message: 'Erro ao registrar o usuário', error });
     }
 }));
-// Rota de login de usuário
 router.post('/login', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { email, password } = req.body;
     if (!email || !password) {
@@ -61,8 +59,7 @@ router.post('/login', (req, res) => __awaiter(void 0, void 0, void 0, function* 
         if (!isMatch) {
             return res.status(400).json({ message: 'Credenciais inválidas.' });
         }
-        const token = jsonwebtoken_1.default.sign({ id: user.id, role: user.role }, process.env.JWT_SECRET || 'Sua Senha', // Mesma chave secreta
-        { expiresIn: '1h' });
+        const token = jsonwebtoken_1.default.sign({ id: user.id, role: user.role }, process.env.JWT_SECRET || 'Sua Senha', { expiresIn: '1h' });
         res.status(200).json({ token });
     }
     catch (error) {
@@ -70,7 +67,6 @@ router.post('/login', (req, res) => __awaiter(void 0, void 0, void 0, function* 
         res.status(500).json({ message: 'Erro ao fazer login', error });
     }
 }));
-// Rota para obter todos os usuários (apenas para administradores ou professores)
 router.get('/', auth_middleware_1.authMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const users = yield user_model_1.default.findAll();
@@ -80,7 +76,6 @@ router.get('/', auth_middleware_1.authMiddleware, (req, res) => __awaiter(void 0
         res.status(500).json({ message: 'Erro ao buscar usuários', error });
     }
 }));
-// Rota para obter um único usuário por ID
 router.get('/:id', auth_middleware_1.authMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
     try {
@@ -94,7 +89,6 @@ router.get('/:id', auth_middleware_1.authMiddleware, (req, res) => __awaiter(voi
         res.status(500).json({ message: 'Erro ao buscar o usuário', error });
     }
 }));
-// Rota para atualizar um usuário
 router.put('/:id', auth_middleware_1.authMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
     const { name, username, email, mobilePhone, is_Active, role } = req.body;
@@ -116,7 +110,6 @@ router.put('/:id', auth_middleware_1.authMiddleware, (req, res) => __awaiter(voi
         res.status(500).json({ message: 'Erro ao atualizar o usuário', error });
     }
 }));
-// Rota para deletar um usuário
 router.delete('/:id', auth_middleware_1.authMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
     try {

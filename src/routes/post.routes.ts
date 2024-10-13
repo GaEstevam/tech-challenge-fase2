@@ -118,18 +118,23 @@ router.get('/:id', authMiddleware, async (req: Request, res: Response) => {
 });
 
 
-router.get('/search/:title', authMiddleware, async (req: Request, res: Response) => {
-  const { title } = req.params;
+router.get('/search/:query', authMiddleware, async (req: Request, res: Response) => {
+  const { query } = req.params;
 
   try {
     const posts = await Post.findAll({
-      where: { title: { [Op.like]: `%${title}%` } },
+      where: {
+        [Op.or]: [
+          { title: { [Op.like]: `%${query}%` } },
+          { description: { [Op.like]: `%${query}%` } }
+        ]
+      },
       include: [{ model: User, as: 'creator', attributes: ['username'] }]
     });
 
     if (posts.length === 0) {
-      console.log('Nenhuma postagem encontrada com esse título');
-      return res.status(404).json({ message: 'Nenhuma postagem encontrada com esse título.' });
+      console.log('Nenhuma postagem encontrada com o termo fornecido');
+      return res.status(404).json({ message: 'Nenhuma postagem encontrada com o termo fornecido.' });
     }
 
     console.log('Postagens encontradas:', posts);
@@ -139,7 +144,6 @@ router.get('/search/:title', authMiddleware, async (req: Request, res: Response)
     return res.status(500).json({ message: 'Erro ao pesquisar postagens.', error });
   }
 });
-
 
 router.delete('/delete/:id', authMiddleware, isProfessor, async (req: Request, res: Response) => {
   const { id } = req.params;

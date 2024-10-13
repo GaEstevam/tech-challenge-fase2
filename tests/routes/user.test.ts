@@ -1,14 +1,27 @@
 import request from 'supertest';
 import app from '../../src/app';
 import jwt from 'jsonwebtoken';
+import User from '../../src/models/user.model';
+
+let token: string;
+let userId: number;
 
 describe('User Routes', () => {
-  let token: string;
-
   beforeAll(async () => {
+    const user = await User.create({
+      name: 'Professor Teste',
+      username: 'professor_teste',
+      password: 'senha123',
+      email: `professor${Date.now()}@example.com`,
+      mobilePhone: '1234567890',
+      role: 'professor',
+    });
+
+    userId = user.id;
+
     token = jwt.sign(
-      { id: 1, role: 'professor' },
-      process.env.JWT_SECRET || 'Sua Senha',
+      { id: userId, role: user.role },
+      process.env.JWT_SECRET || 'secret_key',
       { expiresIn: '1h' }
     );
   });
@@ -22,13 +35,12 @@ describe('User Routes', () => {
         password: 'senha123',
         email: 'novo@usuario.com',
         mobilePhone: '1234567890',
-        role: "professor",
+        role: 'professor',
       });
-  
-    expect(response.statusCode).toBe(201); 
-    expect(response.body).toHaveProperty('token'); 
+
+    expect(response.statusCode).toBe(201);
+    expect(response.body).toHaveProperty('token');
   });
-  
 
   it('Deve permitir login de um usuário', async () => {
     const response = await request(app)
@@ -38,35 +50,35 @@ describe('User Routes', () => {
         password: 'senha123',
       });
 
-    expect(response.statusCode).toBe(200); 
-    expect(response.body).toHaveProperty('token'); 
+    expect(response.statusCode).toBe(200);
+    expect(response.body).toHaveProperty('token');
   });
 
   it('Deve listar todos os usuários', async () => {
     const response = await request(app)
       .get('/api/users')
-      .set('Authorization', `Bearer ${token}`); 
+      .set('Authorization', `Bearer ${token}`);
 
-    expect(response.statusCode).toBe(200); 
-    expect(Array.isArray(response.body)).toBe(true); 
+    expect(response.statusCode).toBe(200);
+    expect(Array.isArray(response.body)).toBe(true);
   });
 
   it('Deve retornar um usuário específico pelo ID', async () => {
     const response = await request(app)
-      .get('/api/users/1') 
-      .set('Authorization', `Bearer ${token}`); 
+      .get(`/api/users/${userId}`)
+      .set('Authorization', `Bearer ${token}`);
 
-    expect(response.statusCode).toBe(200); 
-    expect(response.body).toHaveProperty('id'); 
-    expect(response.body.id).toBe(1); 
+    expect(response.statusCode).toBe(200);
+    expect(response.body).toHaveProperty('id');
+    expect(response.body.id).toBe(userId);
   });
 
   it('Deve retornar 404 ao buscar usuário inexistente', async () => {
     const response = await request(app)
-      .get('/api/users/999') 
-      .set('Authorization', `Bearer ${token}`); 
+      .get('/api/users/999')
+      .set('Authorization', `Bearer ${token}`);
 
-    expect(response.statusCode).toBe(404); 
-    expect(response.body.message).toBe('Usuário não encontrado.'); 
+    expect(response.statusCode).toBe(404);
+    expect(response.body.message).toBe('Usuário não encontrado.');
   });
 });
